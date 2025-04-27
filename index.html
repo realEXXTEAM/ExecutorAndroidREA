@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roblox Executor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: black;
+      color: white;
+      text-align: center;
+      transition: margin-left 0.3s;
+    }
+    header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    .title {
+      font-size: 32px;
+      margin: 20px 10px;
+    }
+    .highlight {
+      color: #ff0055;
+    }
+    .desc {
+      font-size: 16px;
+      color: grey;
+      margin: 10px 20px 30px;
+    }
+    .button-container {
+      margin-bottom: 50px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .button {
+      background: #111;
+      padding: 15px 30px;
+      border-radius: 15px;
+      text-decoration: none;
+      color: white;
+      font-size: 20px;
+      width: 260px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, background 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+    .button:hover {
+      background: #333;
+      transform: scale(1.05);
+    }
+    .button img {
+      width: 110px;
+      height: 110px;
+      margin-right: 10px;
+    }
+    .button span {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 18px;
+    }
+
+    /* Hamburger Menu (3 dots) */
+    .menu-icon {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      cursor: pointer;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    .menu-icon div {
+      width: 30px;
+      height: 4px;
+      background-color: white;
+      margin: 6px 0;
+      transition: transform 0.3s ease;
+    }
+    .menu-icon.open div:nth-child(1) {
+      transform: translateY(10px) rotate(45deg);
+    }
+    .menu-icon.open div:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-icon.open div:nth-child(3) {
+      transform: translateY(-10px) rotate(-45deg);
+    }
+
+    /* Side Menu */
+    .side-menu {
+      position: fixed;
+      top: 0; left: 0;
+      width: 70%;
+      height: 100%;
+      background: #222;
+      transform: translateX(-100%); /* Initially off-screen */
+      transition: transform 0.3s ease;
+      padding-top: 60px;
+    }
+    .side-menu.open {
+      transform: translateX(0); /* Slide in */
+    }
+    .side-menu a {
+      display: block;
+      padding: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      border-bottom: 1px solid #444;
+      transition: background 0.3s ease;
+    }
+    .side-menu a:hover {
+      background: #333;
+    }
+
+    /* Popup for Download Links */
+    .popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .popup-content {
+      background: #222;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+    .popup-content h2 {
+      margin-bottom: 20px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+    }
+    .download-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .download-buttons a {
+      background: #111;
+      padding: 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    .download-buttons a:hover {
+      background: #333;
+    }
+
+    /* Menghapus fokus dan highlight biru pada tombol dan elemen */
+    button, a, input, select, textarea {
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: none;
+    }
+
+    /* Animasi download sedang berlangsung */
+    .loading {
+      display: none;
+      font-size: 16px;
+      color: white;
+      margin-top: 20px;
+    }
+    .loading span {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://i.imgur.com/xHQLFPb.png" alt="Logo">
+  <h1>Roblox Executor</h1>
+  <div class="menu-icon" onclick="toggleSideMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</header>
+
+<div class="title">
+  Download Roblox Executor for <span class="highlight">Mobile</span>.
+</div>
+
+<div class="desc">
+  Choose your favorite executor and start executing your scripts easily!
+</div>
+
+<div class="button-container">
+  <div class="button" onclick="openDownloadLink('Codex')">
+    <img src="https://i.imgur.com/kR2EuNV.png" alt="Codex">
+    <span>Codex</span>
+  </div>
+  <div class="button" onclick="openDownloadLink('KRNL')">
+    <img src="https://i.imgur.com/gnwkVSW.png" alt="KRNL">
+    <span>KRNL</span>
+  </div>
+  <div class="button" onclick="openDownloadLink('Delta')">
+    <img src="https://i.imgur.com/kvwxpIo.png" alt="Delta">
+    <span>Delta</span>
+  </div>
+  <div class="button" onclick="openDownloadLink('Fluxus')">
+    <img src="https://i.imgur.com/95LIzQk.png" alt="Fluxus">
+    <span>Fluxus</span>
+  </div>
+</div>
+
+<!-- Side Menu -->
+<div class="side-menu" id="sideMenu">
+  <a href="https://link-ke-halaman-credits.com" target="_blank">Credits</a>
+</div>
+
+<!-- POPUP for Download Links -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <button class="close-btn" onclick="closePopup()">×</button>
+    <h2 id="popup-title">Download</h2>
+    <div class="download-buttons">
+      <a id="link-original" href="#" target="_blank" onclick="startDownload('original')">Versi Original</a>
+      <a id="link-vng" href="#" target="_blank" onclick="startDownload('vng')">Versi Roblox VNG</a>
+    </div>
+    <div class="loading" id="loading">
+      <span>⏳ Downloading...</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// LINK DOWNLOAD semua executor
+const downloadLinks = {
+  'Codex': {
+    original: 'https://link-codex-original.com',
+    vng: 'https://link-codex-vng.com'
+  },
+  'KRNL': {
+    original: 'https://link-krnl-original.com',
+    vng: 'https://link-krnl-vng.com'
+  },
+  'Delta': {
+    original: 'https://link-delta-original.com',
+    vng: 'https://link-delta-vng.com'
+  },
+  'Fluxus': {
+    original: 'https://link-fluxus-original.com',
+    vng: 'https://link-fluxus-vng.com'
+  }
+};
+
+function openDownloadLink(executorName) {
+  const links = downloadLinks[executorName];
+  document.getElementById('popup-title').innerText = `Download ${executorName}`;
+  document.getElementById('link-original').href = links.original;
+  document.getElementById('link-vng').href = links.vng;
+  document.getElementById('popup').style.display = 'flex';
+  
+  // Disable scrolling on body when popup is open
+  document.body.style.overflow = 'hidden';
+}
+
+function closePopup() {
+  document.getElementById('popup').style.display = 'none';
+  
+  // Enable scrolling on body when popup is closed
+  document.body.style.overflow = 'auto';
+}
+
+function startDownload(type) {
+  document.getElementById('loading').style.display = 'block';
+  setTimeout(function() {
+    document.getElementById('loading').style.display = 'none';
+    alert(`Download ${type} started!`);
+    window.location.href = document.getElementById('link-' + type).href; // Start download
+  }, 3000); // Simulating download for 3 seconds
+}
+
+// Side Menu
+function toggleSideMenu() {
+  const sideMenu = document.getElementById('sideMenu');
+  const menuIcon = document.querySelector('.menu-icon');
+  
+  sideMenu.classList.toggle('open');
+  menuIcon.classList.toggle('open');
+  // Disable scrolling when side menu is open
+  document.body.style.overflow = sideMenu.classList.contains('open') ? 'hidden' : 'auto';
+}
+</script>
+
+</body>
+</html>
