@@ -1,73 +1,3 @@
-<!Loading Aplikasi>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Loading Slider</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .progress-container {
-      width: 80%;
-      height: 30px;
-      background: #2c2c2c;
-      border-radius: 15px;
-      overflow: hidden;
-      margin-bottom: 15px;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00ff99, #00ccff);
-      transition: width 0.2s ease;
-    }
-
-    .percentage {
-      font-size: 18px;
-    }
-  </style>
-</head>
-<body>
-  <div class="progress-container">
-    <div class="progress-bar" id="progress-bar"></div>
-  </div>
-  <div class="percentage" id="percentage">0%</div>
-
-  <script>
-    let progress = 0;
-    const bar = document.getElementById("progress-bar");
-    const text = document.getElementById("percentage");
-
-    const loading = setInterval(() => {
-      if (progress >= 100) {
-        clearInterval(loading);
-      } else {
-        progress++;
-        bar.style.width = progress + "%";
-        text.textContent = progress + "%";
-      }
-    }, 30); // speed (ms per step)
-  </script>
-</body>
-</html>
-
-
-
-
-
-
-
 <!TAMPILAN APLIKASI>
 <html lang="id">
 <head>
@@ -431,4 +361,69 @@ function toggleSideMenu() {
 <body>
 </body>
 </html>
+
+<!Loading Aplikasi>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loading Slider</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .progress-container {
+      width: 80%;
+      height: 30px;
+      background: #2c2c2c;
+      border-radius: 15px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ff99, #00ccff);
+      transition: width 0.2s ease;
+    }
+
+    .percentage {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="percentage" id="percentage">0%</div>
+
+  <script>
+    let progress = 0;
+    const bar = document.getElementById("progress-bar");
+    const text = document.getElementById("percentage");
+
+    const loading = setInterval(() => {
+      if (progress >= 100) {
+        clearInterval(loading);
+      } else {
+        progress++;
+        bar.style.width = progress + "%";
+        text.textContent = progress + "%";
+      }
+    }, 10); // speed (ms per step)
+  </script>
+</body>
+</html>
+
 
