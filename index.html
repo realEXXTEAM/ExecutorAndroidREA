@@ -1,3 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>System Shutdown</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .terminal {
+      font-size: 1.2rem;
+      white-space: pre-wrap;
+      padding: 20px;
+      max-width: 95vw;
+      word-break: break-word;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00ff00;
+      animation: blink 1s step-start infinite;
+    }
+
+    @keyframes blink {
+      50% { background-color: transparent; }
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      opacity: 0;
+      transition: opacity 2s;
+      z-index: 10;
+    }
+
+    .overlay.active {
+      opacity: 1;
+    }
+
+    #saveBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 18px;
+      background-color: #111;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      font-family: monospace;
+      cursor: pointer;
+      z-index: 20;
+      display: none;
+      font-size: 1rem;
+    }
+
+    #saveBtn:hover {
+      background-color: #00ff00;
+      color: black;
+    }
+
+    .popup {
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      width: 400px;
+      max-height: 300px;
+      background-color: #111;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      padding: 15px;
+      font-size: 0.9rem;
+      overflow-y: auto;
+      z-index: 25;
+      box-shadow: 0 0 10px #00ff00;
+      opacity: 0;
+      transform: scale(0.9);
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .popup.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .popup .close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      cursor: pointer;
+      color: #00ff00;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .popup .close:hover {
+      color: red;
+    }
+
+    .popup button {
+      background: transparent;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      padding: 5px 10px;
+      font-family: monospace;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .popup button:hover {
+      background-color: #00ff00;
+      color: black;
+    }
+
+    /* Mobile Optimization */
+    @media (max-width: 500px) {
+      .terminal {
+        font-size: 1rem;
+        padding: 10px;
+      }
+
+      .popup {
+        width: 90%;
+        bottom: 80px;
+        right: 5%;
+        max-height: 60%;
+        font-size: 0.8rem;
+      }
+
+      #saveBtn {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+      }
+
+      .popup .close {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal" id="terminal"></div>
+  <div class="overlay" id="overlay"></div>
+  <button id="saveBtn" onclick="togglePopup()">Save Log</button>
+
+  <!-- Log Popup -->
+  <div class="popup" id="popup">
+    <div class="close" onclick="togglePopup()">✖</div>
+    <pre id="logContent"></pre>
+    <br>
+    <button onclick="saveLog()">Download Log</button>
+  </div>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+    const overlay = document.getElementById("overlay");
+    const saveBtn = document.getElementById("saveBtn");
+    const popup = document.getElementById("popup");
+    const logContent = document.getElementById("logContent");
+
+    const lines = [
+      "Access granted...",
+      "Initializing shutdown sequence...",
+      "Downloading system data...",
+      "Killing background processes...",
+      "Encrypting logs...",
+      "Sending final signal to kernel...",
+      "System shutting down in 3...",
+      "2...",
+      "1...",
+      "Shutdown complete. Goodbye."
+    ];
+
+    function skipToShutdown() {
+      terminal.textContent = lines.join("\n") + "\n";
+      overlay.classList.add("active");
+      saveBtn.style.display = "block";
+    }
+
+    function typeLine(i = 0) {
+      if (i < lines.length) {
+        let text = lines[i];
+        let j = 0;
+        const typing = setInterval(() => {
+          if (j <= text.length) {
+            terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor"><\/span>/g, '') +
+              text.charAt(j++) + '<span class="cursor"></span>';
+          } else {
+            clearInterval(typing);
+            terminal.innerHTML += "\n";
+            setTimeout(() => typeLine(i + 1), 400);
+          }
+        }, 100);
+      } else {
+        setTimeout(() => {
+          overlay.classList.add('active');
+          saveBtn.style.display = 'block';
+          localStorage.setItem("shutdown_done", "true");
+        }, 1000);
+      }
+    }
+
+    function togglePopup() {
+      const active = popup.classList.contains("active");
+      if (!active) {
+        logContent.textContent = terminal.textContent;
+        popup.classList.add("active");
+      } else {
+        popup.classList.remove("active");
+      }
+    }
+
+    function saveLog() {
+      const text = terminal.textContent;
+      const blob = new Blob([text], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "shutdown_log.txt";
+      a.click();
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("shutdown_done") === "true") {
+        skipToShutdown();
+      } else {
+        typeLine();
+      }
+    };
+  </script>
+</body>
+</html>
+
+
 <!TAMPILAN APLIKASI>
 <html lang="id">
 <head>
